@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Form Pendaftaran Mahasiswa Baru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0f172a;            /* slate-900 */
+      --panel: #111827;         /* gray-900 */
+      --muted: #9ca3af;         /* gray-400 */
+      --text: #e5e7eb;          /* gray-200 */
+      --accent: #22c55e;        /* green-500 */
+      --accent-2: #16a34a;      /* green-600 */
+      --ring: #38bdf8;          /* sky-400 */
+      --danger: #ef4444;        /* red-500 */
+      --ok: #10b981;            /* emerald-500 */
+      --chip: #1f2937;          /* gray-800 */
+      --input: #0b1220;         /* custom */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu;
+      background: radial-gradient(1200px 600px at 20% -10%, #1e293b55, transparent 60%),
+                  radial-gradient(1200px 800px at 120% 10%, #0ea5e955, transparent 50%),
+                  var(--bg);
+      color:var(--text);
+      min-height:100dvh; display:flex; align-items:center; justify-content:center; padding:28px;
+    }
+    .container{
+      width:100%; max-width:980px;
+      background: linear-gradient(180deg, #0b1220, #0a0f1a);
+      border:1px solid #1f2937; border-radius:20px; overflow:hidden;
+      box-shadow: 0 30px 80px #0008, inset 0 1px 0 #ffffff10;
+    }
+    header{
+      padding:22px 26px; border-bottom:1px solid #1f2937;
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      background:linear-gradient(180deg, #0d1424, #0b1220);
+    }
+    header h1{margin:0; font-size:20px; letter-spacing:.2px}
+    .badge{
+      font-size:12px; padding:6px 10px; border-radius:999px; color:#a7f3d0; background:#064e3b; border:1px solid #065f46;
+    }
+    .inner{ padding:26px }
+    .grid{
+      display:grid; gap:16px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .col-6{ grid-column: span 6 }
+    .col-12{ grid-column: span 12 }
+    @media (max-width: 880px){
+      .col-6{ grid-column: span 12 }
+    }
+
+    label{ display:block; font-size:13px; color:#cbd5e1; margin:0 0 8px 2px }
+    .req{ color:#34d399; margin-left:6px; font-size:11px; background:#065f46; padding:1px 6px; border-radius:999px; border:1px solid #10b98133 }
+    .control{
+      position:relative;
+      background:var(--input);
+      border:1px solid #22314a;
+      border-radius:12px; padding:12px 14px; color:var(--text); width:100%;
+      outline:none; transition:border .2s, box-shadow .2s, transform .02s;
+    }
+    .control:hover{ border-color:#334155 }
+    .control:focus{
+      border-color: var(--ring);
+      box-shadow: 0 0 0 4px #38bdf822;
+    }
+    input[type="file"].control{ padding:10px 12px }
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+    .radio{
+      display:flex; gap:10px; padding:10px 12px; background:var(--chip); border:1px solid #1f2937; border-radius:12px;
+    }
+    .radio label{ margin:0; color:#e2e8f0; font-size:14px; display:flex; align-items:center; gap:8px }
+    .hint{ font-size:12px; color:var(--muted); margin-top:6px }
+    .error{ font-size:12px; color:#fecaca; margin-top:6px; display:none }
+    .show-error .error{ display:block }
+    .chips{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px }
+    .chip{ padding:6px 10px; border-radius:999px; background:#0b1220; border:1px dashed #334155; color:#9ca3af; font-size:12px }
+    .actions{ display:flex; gap:12px; justify-content:flex-end; padding:10px 0 0 }
+    button{
+      appearance:none; border:0; cursor:pointer; border-radius:12px; padding:12px 16px; font-weight:700;
+      background:linear-gradient(180deg, var(--accent), var(--accent-2)); color:#052e1b;
+      box-shadow: 0 10px 24px #16a34a33, inset 0 1px 0 #ffffff77;
+      transition: transform .06s ease, filter .15s ease;
+    }
+    button:hover{ filter:brightness(1.03) }
+    button:active{ transform:translateY(1px) }
+    .button-ghost{
+      background:#0b1220; color:#cbd5e1; border:1px solid #23324c; box-shadow:none; font-weight:600;
+    }
+    .divider{
+      height:1px; background:linear-gradient(90deg, transparent, #1f2937, transparent);
+      margin:18px 0;
+    }
+    .footer-note{ font-size:12px; color:#9ca3af; text-align:center; padding:12px 0 2px }
+    .success{
+      display:none; margin-top:12px; padding:12px 14px; border-radius:12px; border:1px solid #065f46; background:#052e1b;
+      color:#a7f3d0; font-size:14px;
+    }
+    .success.show{ display:block }
+
+    /* Small, tasteful "progress" bar */
+    .progress{ height:6px; background:#0b1220; border-top:1px solid #1f2937 }
+    .bar{ height:6px; width:0%; background:linear-gradient(90deg, #22c55e, #06b6d4); transition:width .4s ease }
+
+    /* Preview modal */
+    dialog{
+      border:1px solid #1f2937; background:#0a0f1a; color:var(--text); border-radius:16px; width:min(720px, 96vw);
+      padding:0; box-shadow: 0 30px 80px #000a;
+    }
+    dialog header{ border-bottom:1px solid #1f2937 }
+    .preview{ padding:18px 22px; max-height:70dvh; overflow:auto }
+    .preview h3{ margin:0 0 8px; font-size:18px }
+    .preview pre{
+      margin:0; background:#0b1220; border:1px solid #22314a; border-radius:12px; padding:14px; overflow:auto;
+      white-space:pre-wrap; word-wrap:break-word; font-size:13px; color:#cbd5e1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="application" aria-labelledby="judul">
+    <header>
+      <div class="row" style="gap:12px">
+        <h1 id="judul">Pendaftaran Mahasiswa Baru</h1>
+        <span class="badge">Gelombang 2 • 2025</span>
+      </div>
+      <div class="row" aria-hidden="true">
+        <span class="chip">Formulir Resmi</span>
+        <span class="chip">Data Aman</span>
+      </div>
+    </header>
+
+    <div class="progress"><div class="bar" id="bar"></div></div>
+
+    <form id="formMaba" class="inner" novalidate>
+      <div class="grid">
+        <div class="col-6">
+          <label for="nama">Nama Lengkap <span class="req">wajib</span></label>
+          <input class="control" id="nama" name="nama" type="text" placeholder="Nama sesuai KTP" required minlength="3" />
+          <div class="error">Nama minimal 3 karakter.</div>
+        </div>
+
+        <div class="col-6">
+          <label for="nik">NIK <span class="req">wajib</span></label>
+          <input class="control" id="nik" name="nik" type="text" inputmode="numeric" pattern="\\d{16}" placeholder="16 digit" required />
+          <div class="error">NIK harus 16 digit angka.</div>
+        </div>
+
+        <div class="col-6">
+          <label for="email">Email <span class="req">wajib</span></label>
+          <input class="control" id="email" name="email" type="email" placeholder="nama@email.com" required />
+          <div class="error">Masukkan email yang valid.</div>
+        </div>
+
+        <div class="col-6">
+          <label for="hp">No. HP (WA) <span class="req">wajib</span></label>
+          <input class="control" id="hp" name="hp" type="tel" inputmode="numeric" pattern="\\+?\\d{10,15}" placeholder="+62xxxxxxxxxxx" required />
+          <div class="error">Masukkan nomor 10–15 digit (boleh diawali +62).</div>
+        </div>
+
+        <div class="col-6">
+          <label>Jenis Kelamin <span class="req">wajib</span></label>
+          <div class="radio">
+            <label><input type="radio" name="jk" value="Laki-laki" required> Laki-laki</label>
+            <label><input type="radio" name="jk" value="Perempuan" required> Perempuan</label>
+          </div>
+          <div class="error">Pilih salah satu.</div>
+        </div>
+
+        <div class="col-6">
+          <label for="lahir">Tanggal Lahir <span class="req">wajib</span></label>
+          <input class="control" id="lahir" name="lahir" type="date" required />
+          <div class="error">Tanggal lahir wajib diisi.</div>
+        </div>
+
+        <div class="col-12">
+          <label for="alamat">Alamat Domisili <span class="req">wajib</span></label>
+          <textarea class="control" id="alamat" name="alamat" rows="3" placeholder="Jalan, RT/RW, Kel/Desa, Kec, Kota/Kab, Provinsi" required></textarea>
+          <div class="error">Alamat wajib diisi.</div>
+        </div>
+
+        <div class="col-6">
+          <label for="prodi">Program Studi Pilihan <span class="req">wajib</span></label>
+          <select class="control" id="prodi" name="prodi" required>
+            <option value="" selected disabled>— pilih prodi —</option>
+            <option>Teknik Informatika</option>
+            <option>Sistem Informasi</option>
+            <option>Rekayasa Perangkat Lunak</option>
+            <option>Teknik Elektro</option>
+            <option>Manajemen</option>
+            <option>Akuntansi</option>
+          </select>
+          <div class="error">Pilih program studi.</div>
+        </div>
+
+        <div class="col-6">
+          <label for="sekolah">Asal Sekolah</label>
+          <input class="control" id="sekolah" name="sekolah" type="text" placeholder="SMA/SMK/MA ..." />
+        </div>
+
+        <div class="col-6">
+          <label for="tahun">Tahun Lulus</label>
+          <input class="control" id="tahun" name="tahun" type="number" min="2015" max="2025" placeholder="contoh: 2024" />
+        </div>
+
+        <div class="col-6">
+          <label for="nilai">Rata-rata Nilai (optional)</label>
+          <input class="control" id="nilai" name="nilai" type="number" step="0.01" min="0" max="100" placeholder="0–100" />
+        </div>
+
+        <div class="col-12">
+          <label for="prestasi">Prestasi / Beasiswa (opsional)</label>
+          <textarea class="control" id="prestasi" name="prestasi" rows="3" placeholder="Tulis prestasi akademik/non-akademik, jika ada"></textarea>
+          <div class="chips">
+            <span class="chip">Olimpiade</span>
+            <span class="chip">LKS</span>
+            <span class="chip">Kejuaraan Olahraga</span>
+            <span class="chip">Beasiswa</span>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <label for="foto">Pas Foto (JPG/PNG, max 2MB)</label>
+          <input class="control" id="foto" name="foto" type="file" accept=".jpg,.jpeg,.png" />
+          <div class="hint">Rasio 3×4 disarankan.</div>
+        </div>
+
+        <div class="col-6">
+          <label for="ijazah">Scan Ijazah/Transkrip (PDF)</label>
+          <input class="control" id="ijazah" name="ijazah" type="file" accept=".pdf" />
+        </div>
+
+        <div class="col-12">
+          <div class="row" style="align-items:flex-start">
+            <input id="setuju" name="setuju" type="checkbox" required />
+            <label for="setuju" style="margin:0">Saya menyatakan data yang diisi adalah benar.</label>
+          </div>
+          <div class="error">Centang pernyataan kebenaran data.</div>
+        </div>
+
+        <div class="col-12 divider"></div>
+
+        <div class="col-12 actions">
+          <button type="button" class="button-ghost" id="btnPreview">Pratinjau</button>
+          <button type="submit">Kirim Pendaftaran</button>
+        </div>
+
+        <div id="msg" class="col-12 success" role="status" aria-live="polite">
+          ✔ Data berhasil disimpan (demo). Anda bisa menghubungkan ke backend sesuai kebutuhan.
+        </div>
+
+        <div class="col-12 footer-note">
+          © 2025 Panitia PMB • Jangan segan menghubungi admin jika ada kendala.
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal Preview -->
+  <dialog id="modalPreview" aria-labelledby="pvTitle">
+    <header class="row" style="justify-content:space-between">
+      <h1 id="pvTitle">Pratinjau Data</h1>
+      <button class="button-ghost" onclick="document.getElementById('modalPreview').close()">Tutup</button>
+    </header>
+    <div class="preview">
+      <h3>Ringkasan Isian</h3>
+      <pre id="pvData">{}</pre>
+    </div>
+  </dialog>
+
+  <script>
+    const form = document.getElementById('formMaba');
+    const bar = document.getElementById('bar');
+    const msg = document.getElementById('msg');
+    const modal = document.getElementById('modalPreview');
+    const pvData = document.getElementById('pvData');
+    const btnPreview = document.getElementById('btnPreview');
+
+    // Progress: hitung jumlah field yang valid
+    function updateProgress(){
+      const requiredFields = Array.from(form.querySelectorAll('[required]')).filter(el => el.type !== 'checkbox' && el.type !== 'radio');
+      const radios = new Set(Array.from(form.querySelectorAll('input[type="radio"][required]')).map(r => r.name));
+      const checkboxes = Array.from(form.querySelectorAll('input[type="checkbox"][required]'));
+
+      let valid = 0;
+      for(const el of requiredFields){ if(el.checkValidity()) valid++; }
+      // radio group count
+      for(const name of radios){
+        const group = form.querySelectorAll(`input[type="radio"][name="${name}"]`);
+        if(Array.from(group).some(r => r.checked)) valid++;
+      }
+      // checkbox required count
+      for(const cb of checkboxes){ if(cb.checked) valid++; }
+
+      const total = requiredFields.length + radios.size + checkboxes.length;
+      const pct = Math.round((valid/total)*100);
+      bar.style.width = pct + '%';
+      bar.setAttribute('aria-valuenow', pct);
+    }
+
+    // Tampilkan error di bawah field
+    function attachValidation(){
+      const fields = form.querySelectorAll('.control, input[type="radio"], input[type="checkbox"]');
+      fields.forEach(el=>{
+        const wrapper = el.closest('.col-6, .col-12') || el.parentElement;
+        function show(){
+          if(!el.checkValidity()){
+            wrapper.classList.add('show-error');
+          }else{
+            wrapper.classList.remove('show-error');
+          }
+          updateProgress();
+        }
+        el.addEventListener('input', show);
+        el.addEventListener('blur', show);
+        if(el.type === 'radio' || el.type === 'checkbox'){
+          el.addEventListener('change', show);
+        }
+      });
+    }
+
+    // Validasi file sederhana
+    function validateFiles(){
+      const foto = document.getElementById('foto');
+      const ijazah = document.getElementById('ijazah');
+      if(foto.files[0]){
+        const okType = ['image/jpeg','image/png'].includes(foto.files[0].type);
+        const okSize = foto.files[0].size <= 2*1024*1024;
+        if(!okType || !okSize){
+          alert('Pas foto harus JPG/PNG dan maksimal 2MB.');
+          return false;
+        }
+      }
+      if(ijazah.files[0] && ijazah.files[0].type !== 'application/pdf'){
+        alert('Ijazah/Transkrip harus berupa PDF.');
+        return false;
+      }
+      return true;
+    }
+
+    // Kumpulkan data formulir (untuk pratinjau/demo)
+    function collectData(){
+      const data = new FormData(form);
+      const obj = {};
+      for(const [k,v] of data.entries()){
+        if(obj[k]){ // gabung radio/checkbox jika ada multiple
+          if(Array.isArray(obj[k])) obj[k].push(v);
+          else obj[k] = [obj[k], v];
+        } else { obj[k] = v; }
+      }
+      return obj;
+    }
+
+    // Submit (demo)
+    form.addEventListener('submit', e=>{
+      e.preventDefault();
+      if(!form.checkValidity()){
+        form.reportValidity();
+        return;
+      }
+      if(!validateFiles()) return;
+
+      // Simulasi simpan
+      msg.classList.add('show');
+      setTimeout(()=> msg.classList.remove('show'), 4000);
+
+      // Reset jika mau
+      // form.reset(); updateProgress();
+    });
+
+    // Pratinjau
+    btnPreview.addEventListener('click', ()=>{
+      if(!form.checkValidity()) form.reportValidity();
+      const data = collectData();
+      pvData.textContent = JSON.stringify(data, null, 2);
+      modal.showModal();
+    });
+
+    // Init
+    attachValidation();
+    updateProgress();
+  </script>
+</body>
+</html>
